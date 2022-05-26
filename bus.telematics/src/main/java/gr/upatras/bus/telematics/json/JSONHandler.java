@@ -1,63 +1,40 @@
 package gr.upatras.bus.telematics.json;
 
-import org.json.simple.*;
-import org.json.simple.parser.*;
+
 import java.io.FileWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.List;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JSONHandler {
 	
-	public static JSONObject editJSONObj(JSONObject jso, String id, String value) {
-		jso.remove(id);
-		jso.put(id, value);
-		return jso;
-	}
-	
-	public static JSONArray editJSONArr(JSONArray jsa, int ind, String id, String value) {
-		JSONObject obj = (JSONObject)jsa.get(ind);
-		obj.remove(id);
-		obj.put(id,value);
-		jsa.add(ind,obj);
-		return jsa;
-	}
-	
-	public static void writeJSONFile(String path, JSONArray jsa) {
+	public static void createJSONFile(String path, Object o) {
+		ObjectMapper m = new ObjectMapper();
 		try {
-			FileWriter fw = new FileWriter(path);
-			fw.write(jsa.toString());
-			fw.close();
+			m.writeValue(Paths.get(path).toFile(), o);
 		}
-		catch(IOException e) {
+		catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static Hashtable<String,Hashtable<String,String>> readJSONFile(String path){
-		Hashtable<String,Hashtable<String,String>> jsonList = new Hashtable<String,Hashtable<String,String>>();
-		Hashtable<String, String> json = new Hashtable<String, String>();
+	public static Object readJSONFile(String path) {
+		ObjectMapper m = new ObjectMapper();
 		try {
-			Object arr = new JSONParser().parse(new FileReader(path));
-			JSONArray jarr = (JSONArray)arr;
-			for(int i=0; i<jarr.size(); i++) {
-				JSONObject jo = (JSONObject)jarr.get(i);
-				json.put("id",jo.get("id").toString());
-				json.put("long", jo.get("long").toString());
-				json.put("lat", jo.get("lat").toString());
-				json.put("routeId", jo.get("routeId").toString());
-				jsonList.put(jo.get("id").toString(),json);
-			}
+			Object o = m.readValue(Paths.get(path).toFile(), Object.class);
+			return o;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			return null;
 		}
-		return jsonList;
 	}
-	
-	
 	
 }
