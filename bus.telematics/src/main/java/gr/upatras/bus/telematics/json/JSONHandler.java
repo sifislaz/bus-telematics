@@ -13,6 +13,10 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * @author jlaza
+ *
+ */
 public class JSONHandler {
 	
 	public static void createJSONFile(String path, Object o) {

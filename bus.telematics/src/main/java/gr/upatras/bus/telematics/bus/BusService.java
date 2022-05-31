@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 
 import gr.upatras.bus.telematics.json.JSONHandler;
 
+/**
+ * @author jlaza
+ *
+ */
+@Service
 public class BusService implements IBusService {
-	// @Autowired
 	// private IRouteService routeService;
 	List<LinkedHashMap> busesJSON;
 	ArrayList<Bus> buses = new ArrayList<Bus>();
