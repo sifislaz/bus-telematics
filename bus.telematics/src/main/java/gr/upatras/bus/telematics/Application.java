@@ -25,7 +25,7 @@ public class Application {
 		List<StopsClass> list=new ArrayList<StopsClass>(); //creating a list of stops
 		
 		for(int i=0;i<Stops.length;i++) {
-		StopsClass s= new StopsClass(1,Stops[i][0],Stops[i][1]);
+		StopsClass s= new StopsClass(i,Stops[i][0],Stops[i][1]);
 		list.add(s);
 		
 		}
