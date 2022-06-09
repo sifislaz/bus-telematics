@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 
 import gr.upatras.bus.telematics.json.JSONHandler;
 
+/**
+ * @author jlaza
+ *
+ */
+@Service
 public class BusService implements IBusService {
-	// @Autowired
 	// private IRouteService routeService;
 	List<LinkedHashMap> busesJSON;
 	ArrayList<Bus> buses = new ArrayList<Bus>();
@@ -24,7 +28,8 @@ public class BusService implements IBusService {
 			double lng = Double.parseDouble(m.get("long").toString());
 			double lat = Double.parseDouble(m.get("lat").toString());
 			int routeId = Integer.parseInt(m.get("routeId").toString());
-
+			if(id < 0) throw new IllegalArgumentException("id can't be negative");
+			if(routeId < 0) throw new IllegalArgumentException("routeId can't be negative");
 			if (routeId == 0) {
 				buses.add(new Bus(id, lng, lat)); // Create the bus
 			} else {
@@ -46,6 +51,7 @@ public class BusService implements IBusService {
 	 */
 	@Override
 	public Bus getById(int id) {
+		if(id < 0) throw new IllegalArgumentException("id can't be negative");
 		for (Bus b : buses) {
 			if (b.getId() == id) {
 				return b;
@@ -82,6 +88,7 @@ public class BusService implements IBusService {
 
 	@Override
 	public Void deleteBus(int id) {
+		if(id < 0) throw new IllegalArgumentException("id can't be negative");
 		for (Bus b : buses) {
 			if (b.getId() == id) {
 				buses.remove(b);

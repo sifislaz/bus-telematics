@@ -26,22 +26,55 @@ public class Bus {
 	/**
 	 * @param longitude
 	 * @param latitude
-	 * Initialize the Bus instance
+	 * Initialize the {@link Bus} instance, with coordinates
 	 */
 	public Bus(double longitude, double latitude) {
+		if(ind + 1 <=0) throw new IllegalStateException("Id should be positive");
 		this.id = ++ind;
 		this.longitude = longitude;
 		this.latitude = latitude;
 	}
 	
+	/**
+	 * @param id
+	 * @param longitude
+	 * @param latitude
+	 * 
+	 * Initialize the {@link Bus} instance, with id and coordinates
+	 */
 	public Bus(int id, double longitude, double latitude) {
+		if(id <= 0) throw new IllegalArgumentException("Id should be positive");
 		this.id = id;
 		Bus.ind = id;
 		this.longitude = longitude;
 		this.latitude = latitude;
 	}
 	
+	/**
+	 * @param longitude
+	 * @param latitude
+	 * @param routeId
+	 * 
+	 * Initialize the {@link Bus} instance, with coordinates and route ID
+	 */
+	public Bus(double longitude, double latitude, int routeId) {
+		if(ind + 1 <=0) throw new IllegalStateException("Id should be positive");
+		this.id = ++ind;
+		this.longitude = longitude;
+		this.latitude = latitude;
+		this.routeId = routeId;
+	}
+	
+	/**
+	 * @param id
+	 * @param longitude
+	 * @param latitude
+	 * @param routeId
+	 * 
+	 * Initialize the {@link Bus} instance, with id, coordinates and route ID
+	 */
 	public Bus(int id, double longitude, double latitude, int routeId) {
+		if(id <= 0) throw new IllegalArgumentException("Id should be positive");
 		this.id = id;
 		this.longitude = longitude;
 		this.latitude = latitude;
