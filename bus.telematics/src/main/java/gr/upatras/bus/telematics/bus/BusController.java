@@ -139,8 +139,8 @@ public class BusController {
 			"application/json;charset=utf-8" }, method = RequestMethod.PATCH)
 	ResponseEntity<Bus> patchBus(
 			@ApiParam(value = "The Bus to be updated", required = true) @RequestBody Bus b,
-			@ApiParam(value = "Identifier of the Bus", required = true) @PathVariable("id") String id) {
-		Bus bus = busService.editBus(b);  // edit the bus entity
+			@ApiParam(value = "Identifier of the Bus", required = true) @PathVariable("id") int id) {
+		Bus bus = busService.editBus(id,b);  // edit the bus entity
 		return new ResponseEntity<Bus>(bus, HttpStatus.OK);  // return the patched bus with ok
 	}
 }
