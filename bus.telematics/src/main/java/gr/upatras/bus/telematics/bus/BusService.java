@@ -71,12 +71,13 @@ public class BusService implements IBusService {
 	}
 	
 	/**
+	 * @param id
 	 *@param bus
-	 *@return the changed {@link Bus}
+	 *@return the changed {@link Bus} with changed id
 	 */
 	@Override
-	public Bus editBus(Bus bus) {
-		Bus temp = getById(bus.getId());
+	public Bus editBus(int id, Bus bus) {
+		Bus temp = getById(id);
 		if (temp != null) {
 			temp.setLongitude(bus.getLongitude());
 			temp.setLatitude(bus.getLatitude());

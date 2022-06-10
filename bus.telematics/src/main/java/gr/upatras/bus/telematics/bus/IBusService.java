@@ -27,10 +27,11 @@ public interface IBusService {
 	Bus createBus(Bus b);
 	
 	/**
+	 * @param id
 	 * @param bus
-	 * @return the changed {@link Bus}
+	 * @return the changed {@link Bus} with specific id
 	 */
-	Bus editBus(Bus bus);
+	Bus editBus(int id, Bus bus);
 	/**
 	 * @param the id of the {@link Bus} to be deleted
 	 */
