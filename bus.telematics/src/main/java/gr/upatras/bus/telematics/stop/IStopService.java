@@ -26,10 +26,11 @@ public interface IStopService {
 	Stop createStop(Stop s);
 	
 	/**
+	 * @param id
 	 * @param s
-	 * @return the changed {@link Stop}
+	 * @return the changed {@link Stop} with specific id
 	 */
-	Stop editStop(Stop s);
+	Stop editStop(int id, Stop s);
 	
 	/**
 	 * @param id
@@ -37,12 +38,5 @@ public interface IStopService {
 	Void deleteStop(int id);
 	
 //	List<Route> getRoutes(int id);
-	
-	/**
-	 * @param routeId
-	 * @param id
-	 * @return true if the stop belongs to the route, else false
-	 */
 
-	Boolean hasRoute(int id, int routeId);
 }

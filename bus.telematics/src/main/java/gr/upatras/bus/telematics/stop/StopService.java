@@ -29,6 +29,9 @@ public class StopService implements IStopService {
 			double lat = Double.parseDouble(m.get("lat").toString());
 			if (id < 0)
 				throw new IllegalArgumentException("id can't be negative");
+			else {
+				stops.add(new Stop(id,name,lng,lat));
+			}
 		}
 	}
 
@@ -37,6 +40,7 @@ public class StopService implements IStopService {
 	 */
 	@Override
 	public ArrayList<Stop> getAll() {
+		System.out.println(stops);
 		return stops;
 	}
 
@@ -77,8 +81,8 @@ public class StopService implements IStopService {
 	 * Edit the stop
 	 */
 	@Override
-	public Stop editStop(Stop s) {
-		Stop toEdit = getById(s.getId());
+	public Stop editStop(int id, Stop s) {
+		Stop toEdit = getById(id);
 		if(toEdit != null) {
 			toEdit.setLatitude(s.getLatitude());
 			toEdit.setLongitude(s.getLongitude());
@@ -97,13 +101,4 @@ public class StopService implements IStopService {
 		return s;
 	}
 	
-	/**
-	 * @param id
-	 * @param routeId
-	 * @return true if the stop belongs to the route, else false
-	 */
-	@Override
-	public Boolean hasRoute(int id, int routeId) {
-		return null;  // to be fixed
-	}
 }

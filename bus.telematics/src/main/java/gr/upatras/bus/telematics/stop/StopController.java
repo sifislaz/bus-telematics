@@ -1,4 +1,4 @@
-package gr.upatras.bus.telematics.bus;
+package gr.upatras.bus.telematics.stop;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import gr.upatras.bus.telematics.bus.Bus;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,62 +21,56 @@ import org.slf4j.LoggerFactory;
  *
  */
 @RestController
-public class BusController {
+public class StopController {
 	@Autowired
-	private IBusService busService;
-	private static final Logger log = LoggerFactory.getLogger(BusController.class);
+	private IStopService stopService;
+	private static final Logger log = LoggerFactory.getLogger(StopController.class);
 
 	/**
-	 * @return List<{@link Bus}>
+	 * @return List<{@link Stop}>
 	 */
-	@ApiOperation(value = "Retrieves all buses", notes = "This operation retrieves all Bus entities. ", response = Bus.class)
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Success", response = Bus.class),
+	@ApiOperation(value = "Retrieves all stops", notes = "This operation retrieves all Bus Stops", response = Stop.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = Stop.class),
 			@ApiResponse(code = 400, message = "Bad Request", response = Error.class),
 			@ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
 			@ApiResponse(code = 403, message = "Forbidden", response = Error.class),
 			@ApiResponse(code = 404, message = "Not Found", response = Error.class),
 			@ApiResponse(code = 405, message = "Method Not allowed", response = Error.class),
 			@ApiResponse(code = 409, message = "Conflict", response = Error.class),
-			@ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
-	})
-	@RequestMapping(value = "/bus/", produces = { "application/json;charset=utf-8" }, method = RequestMethod.GET)
-	public List<Bus> getBus() {
-		List<Bus> buses = busService.getAll();  // gets buses
-		return buses;  // returns buses
+			@ApiResponse(code = 500, message = "Internal Server Error", response = Error.class) })
+	@RequestMapping(value = "/stop/", produces = { "application/json;charset-utf-8" }, method = RequestMethod.GET)
+	public List<Stop> getStops() {
+		List<Stop> stops = stopService.getAll(); // Get all stops
+		return stops;
 	}
 
 	/**
 	 * @param id
-	 * @return {@link Bus}
+	 * @return {@link Stop}
 	 */
-	@ApiOperation(value = "Retrieves a Bus by ID", notes = "This operation retrieves a Bus entity. ", response = Bus.class)
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Success", response = Bus.class),
+	@ApiOperation(value = "Retrieves a Stop by ID", notes = "This operation retrieves a Stop entity. ", response = Stop.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = Stop.class),
 			@ApiResponse(code = 400, message = "Bad Request", response = Error.class),
 			@ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
 			@ApiResponse(code = 403, message = "Forbidden", response = Error.class),
 			@ApiResponse(code = 404, message = "Not Found", response = Error.class),
 			@ApiResponse(code = 405, message = "Method Not allowed", response = Error.class),
 			@ApiResponse(code = 409, message = "Conflict", response = Error.class),
-			@ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
-	})
-	@RequestMapping(value = "/bus/{id}", produces = {
-			"application/json;charset=utf-8" }, method = RequestMethod.GET)
-	public Bus getBusById(
-			@ApiParam(value = "Identifier of Bus", required = true) @PathVariable("id") int id) {
-		log.info(String.format("Will return bus with id %s", id));  // update log
-		Bus bus = busService.getById(id);  // get bus with specific id
-		return bus;  // return bus
+			@ApiResponse(code = 500, message = "Internal Server Error", response = Error.class) })
+	@RequestMapping(value = "/stop/{id}", produces = { "application/json;charset=utf-8" }, method = RequestMethod.GET)
+	public Stop getStopById(@ApiParam(value = "Stop ID", required = true) @PathVariable("id") int id) {
+		log.info(String.format("Return stop with id %d", id));
+		Stop stop = stopService.getById(id); // get stop having the specific id
+		return stop; // return stop
 	}
 
 	/**
 	 * @param id
 	 * @return {@link ResponseEntity}
 	 */
-	@ApiOperation(value = "Deletes a Bus by ID", notes = "This operation deletes a Bus entity. ", response = Bus.class)
+	@ApiOperation(value = "Deletes a Stop by ID", notes = "This operation deletes a Stop entity. ", response = Stop.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Success", response = Bus.class),
+			@ApiResponse(code = 200, message = "Success", response = Stop.class),
 			@ApiResponse(code = 400, message = "Bad Request", response = Error.class),
 			@ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
 			@ApiResponse(code = 403, message = "Forbidden", response = Error.class),
@@ -83,26 +79,27 @@ public class BusController {
 			@ApiResponse(code = 409, message = "Conflict", response = Error.class),
 			@ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
 	})
-	@RequestMapping(value = "/bus/{id}", produces = {
+	@RequestMapping(value = "/stop/{id}", produces = {
 			"application/json;charset=utf-8" }, method = RequestMethod.DELETE)
-	public ResponseEntity<Void> deleteById(
-			@ApiParam(value = "Identifier of the Category", required = true) @PathVariable("id") int id) {
+	public ResponseEntity<Void> deleteStop(@ApiParam(value = "Stop ID", required=true) @PathVariable("id") int id) {
 		try {
-			log.info(String.format("Will delete object with id %s", id));  // log the action
-			return new ResponseEntity<Void>(busService.deleteBus(id), HttpStatus.OK);  // delete the bus and return ok
-		} catch (Exception e) {
-			log.error("Couldn't serialize response for content type application/json", e);  // log the error
-			return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);  // return error
+			log.info(String.format("Going to delete stop with id %s", id)); // delete stop, return OK
+			return new ResponseEntity<Void>(stopService.deleteStop(id), HttpStatus.OK);
+		}
+		catch(Exception e) {
+			log.error("Couldn't resialize response for content type application/json", e);
+			return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
+	
+	
 	/**
-	 * @param b
+	 * @param s
 	 * @return {@link ResponseEntity}
 	 */
-	@ApiOperation(value = "Creates a Bus", notes = "This operation creates a Bus entity.", response = Bus.class)
+	@ApiOperation(value = "Creates a Stop", notes = "This operation creates a Stop entity.", response = Stop.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = "Created", response = Bus.class),
+			@ApiResponse(code = 201, message = "Created", response = Stop.class),
 			@ApiResponse(code = 400, message = "Bad Request", response = Error.class),
 			@ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
 			@ApiResponse(code = 403, message = "Forbidden", response = Error.class),
@@ -110,23 +107,22 @@ public class BusController {
 			@ApiResponse(code = 409, message = "Conflict", response = Error.class),
 			@ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
 	})
-	@RequestMapping(value = "/bus/", produces = { "application/json;charset=utf-8" }, consumes = {
+	@RequestMapping(value = "/stop", produces = { "application/json;charset=utf-8" }, consumes = {
 			"application/json;charset=utf-8" }, method = RequestMethod.POST)
-	public ResponseEntity<Bus> createBus(
-			@ApiParam(value = "The Bus to be created", required = true) @RequestBody Bus b) {
-		log.info("Will add a new bus");  // log the action
-		Bus bus = busService.createBus(b);  // create the bus
-		return new ResponseEntity<Bus>(bus, HttpStatus.OK);  // response with the bus and OK
+	public ResponseEntity<Stop> createBus(@ApiParam(value="Stop ID", required=true) @RequestBody Stop s){
+		log.info("Will add a new stop");  // Update log
+		Stop stop = stopService.createStop(s);
+		return new ResponseEntity<Stop>(stop, HttpStatus.OK);  // return the new stop and OK
 	}
-
+	
 	/**
-	 * @param b
+	 * @param s
 	 * @param id
-	 * @return {@link ResponseEntity}
+	 * @return the edited {@link Stop} instance
 	 */
-	@ApiOperation(value = "Updates partially a Bus", nickname = "patchBus", notes = "This operation updates partially a Bus entity.", response = Bus.class)
+	@ApiOperation(value = "Updates partially a Stop", nickname = "patchStop", notes = "This operation updates partially a Stop entity.", response = Stop.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Updated", response = Bus.class),
+			@ApiResponse(code = 200, message = "Updated", response = Stop.class),
 			@ApiResponse(code = 400, message = "Bad Request", response = Error.class),
 			@ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
 			@ApiResponse(code = 403, message = "Forbidden", response = Error.class),
@@ -135,12 +131,12 @@ public class BusController {
 			@ApiResponse(code = 409, message = "Conflict", response = Error.class),
 			@ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
 	})
-	@RequestMapping(value = "/bus/{id}", produces = { "application/json;charset=utf-8" }, consumes = {
+	@RequestMapping(value = "/stop/{id}", produces = { "application/json;charset=utf-8" }, consumes = {
 			"application/json;charset=utf-8" }, method = RequestMethod.PATCH)
-	ResponseEntity<Bus> patchBus(
-			@ApiParam(value = "The Bus to be updated", required = true) @RequestBody Bus b,
-			@ApiParam(value = "Identifier of the Bus", required = true) @PathVariable("id") String id) {
-		Bus bus = busService.editBus(b);  // edit the bus entity
-		return new ResponseEntity<Bus>(bus, HttpStatus.OK);  // return the patched bus with ok
+	public ResponseEntity<Stop> patchStop(
+			@ApiParam(value="The new stop attributes", required=true) @RequestBody Stop s, 
+			@ApiParam(value="The ID of the edited stop") @PathVariable("id") int id) {
+			Stop stop = stopService.editStop(id, s);
+			return new ResponseEntity<Stop>(stop, HttpStatus.OK);
 	}
 }
