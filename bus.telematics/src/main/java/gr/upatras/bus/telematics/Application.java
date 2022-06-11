@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import gr.upatras.bus.telematics.bus.*;
 import gr.upatras.bus.telematics.json.JSONHandler;
+import gr.upatras.bus.telematics.stop.*;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -12,10 +13,10 @@ import java.util.List;
 
 @SpringBootApplication
 public class Application {
-	private static boolean init = false;
+	private static boolean init = true;
 	public static void main(String[] args) {
 		if(init) {
-			busInitializer(10);
+			stopInitializer();
 		}
 		SpringApplication.run(Application.class, args);
 	}
@@ -36,20 +37,14 @@ public class Application {
 		
 	}
 
-		public static void Stopsinit() {
-		// some stops in patras
-		double[][] Stops = {{38.24681204011898, 21.735934713602745},{38.24757846022097, 21.737429748047255},{38.24945955695653, 21.739850911009736,38.254870592630446, 21.745601783219627},{38.26287031672199, 21.75107972735159},{38.28531985080199, 21.78661969872124}};
-		JSONHandler js= new JSONHandler();
-		List<StopsClass> list=new ArrayList<StopsClass>(); //creating a list of stops
+		public static void stopInitializer() {
+		List<Stop> stops = new ArrayList<Stop>(); //creating a list of stops
+		double[][] stopCoords = {{38.24063,21.730658},{38.241386,21.729435},{38.243265,21.731886},{38.24487,21.733962},{38.245913,21.735746}, {38.265875,21.756742}, {38.264841,21.758909}, {38.264328,21.760212}};
+		String[] stopNames = {"Papaflessa", "Papaflessa-Korinthou", "Korinthou-Miaouli", "Votsi", "Georgiou Sq.", "Milichou 1", "Milichou 2", "Olympion"};
 		
-		for(int i=0;i<Stops.length;i++) {
-		StopsClass s= new StopsClass(i,Stops[i][0],Stops[i][1]);
-		list.add(s);
-		
+		for(int i=0; i<stopNames.length; i++) {
+			stops.add(new Stop(stopNames[i], stopCoords[i][0], stopCoords[i][1]));
 		}
-		//add the list to the json file
-		js.createJSONFile("C:/Users/Sotiris/Desktop/stops.json",list); //change path to your liking
-		
+		JSONHandler.createJSONFile("stops202.json", stops);
 	}
 }
-
