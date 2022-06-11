@@ -1,5 +1,10 @@
 package gr.upatras.bus.telematics.bus;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.*;
+
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +30,7 @@ public class BusController {
 	@Autowired
 	private IBusService busService;
 	private static final Logger log = LoggerFactory.getLogger(BusController.class);
+
 
 	/**
 	 * @return List<{@link Bus}>
@@ -59,7 +67,7 @@ public class BusController {
 			@ApiResponse(code = 409, message = "Conflict", response = Error.class),
 			@ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
 	})
-	@RequestMapping(value = "/bus/{id}", produces = {
+	@RequestMapping(value = "/bus/{id}/", produces = {
 			"application/json;charset=utf-8" }, method = RequestMethod.GET)
 	public Bus getBusById(
 			@ApiParam(value = "Identifier of Bus", required = true) @PathVariable("id") int id) {
@@ -143,4 +151,35 @@ public class BusController {
 		Bus bus = busService.editBus(id,b);  // edit the bus entity
 		return new ResponseEntity<Bus>(bus, HttpStatus.OK);  // return the patched bus with ok
 	}
+	
+	
+	
+	/**
+	 * @return List<{@link Bus}>
+	 * @throws ParseException 
+	 * @throws InterruptedException 
+	 * @throws IOException 
+	 */
+	@ApiOperation(value = "Return estimated time", notes = "This operation return estimated time ", response = String.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Success", response = String.class ),
+			@ApiResponse(code = 400, message = "Bad Request", response = Error.class),
+			@ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
+			@ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+			@ApiResponse(code = 404, message = "Not Found", response = Error.class),
+			@ApiResponse(code = 405, message = "Method Not allowed", response = Error.class),
+			@ApiResponse(code = 409, message = "Conflict", response = Error.class),
+			@ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
+	})
+	@RequestMapping(value = "/bus/{origin}/{destination}", produces = { "application/json;charset=utf-8" }, method = RequestMethod.GET)
+	public String api_call(
+			@ApiParam(value = "origin", required = true) @PathVariable("origin") String origin,
+			@ApiParam(value = "destination", required = true) @PathVariable("destination") String destination)
+			 throws IOException, InterruptedException, ParseException { 
+		String estimatedtime = busService.api_call(origin,destination);  // gets buses
+		return estimatedtime;  // returns buses
+	}
+	
+
+
 }

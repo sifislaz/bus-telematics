@@ -1,6 +1,9 @@
 package gr.upatras.bus.telematics.bus;
 
+import java.io.IOException;
 import java.util.List;
+
+import org.json.simple.parser.ParseException;
 
 /**
  * @author jlaza
@@ -36,4 +39,7 @@ public interface IBusService {
 	 * @param the id of the {@link Bus} to be deleted
 	 */
 	Void deleteBus(int id);
+
+
+	String api_call(String origin,String destination) throws IOException, InterruptedException, ParseException;
 }
