@@ -22,7 +22,7 @@ public class Stop {
 	private double longitude;
 	@JsonProperty("lat")
 	private double latitude;
-	private static int ind = 1060;
+	private static int ind = 1060;  // id of the last available stop
 	
 	
 	public Stop(String name, double longitude, double latitude) {

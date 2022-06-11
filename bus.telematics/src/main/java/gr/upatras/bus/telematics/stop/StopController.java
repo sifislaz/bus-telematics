@@ -1,11 +1,13 @@
 package gr.upatras.bus.telematics.stop;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -138,5 +140,27 @@ public class StopController {
 			@ApiParam(value="The ID of the edited stop") @PathVariable("id") int id) {
 			Stop stop = stopService.editStop(id, s);
 			return new ResponseEntity<Stop>(stop, HttpStatus.OK);
+	}
+	
+	/**
+	 * @param routeId
+	 * @return the {@link Stop} instances that consist the {@link Route} with the specific id
+	 */
+	@ApiOperation(value = "Gets stops by route id",  notes = "This operation gets the stops that consist the route with given id.", response = Stop.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Updated", response = Stop.class),
+			@ApiResponse(code = 400, message = "Bad Request", response = Error.class),
+			@ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
+			@ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+			@ApiResponse(code = 404, message = "Not Found", response = Error.class),
+			@ApiResponse(code = 405, message = "Method Not allowed", response = Error.class),
+			@ApiResponse(code = 409, message = "Conflict", response = Error.class),
+			@ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
+	})
+	@RequestMapping(value="/stop/route", params="routeId", produces= {"application/json;charset=utf-8"}, method = RequestMethod.GET)
+	public List<Stop> getStopsByRoute(@ApiParam(value="Route ID", required=true) @RequestParam("routeId") int routeId){
+		log.info(String.format("Will return stops of route %s", routeId));
+		List<Stop> stops = stopService.getStopsByRouteId(routeId);
+		return stops;
 	}
 }

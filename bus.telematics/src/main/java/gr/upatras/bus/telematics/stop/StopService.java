@@ -1,6 +1,7 @@
 package gr.upatras.bus.telematics.stop;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.LinkedHashMap;
 
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gr.upatras.bus.telematics.json.JSONHandler;
+import gr.upatras.bus.telematics.route.*;
 
 /**
  * @author jlaza
@@ -15,7 +17,9 @@ import gr.upatras.bus.telematics.json.JSONHandler;
  */
 @Service
 public class StopService implements IStopService {
-	//private IRouteService routeService;
+	
+	@Autowired
+	private IRouteService routeService;
 	List<LinkedHashMap> stopsJSON;
 	ArrayList<Stop> stops = new ArrayList<Stop>();
 
@@ -24,12 +28,13 @@ public class StopService implements IStopService {
 		stopsJSON = (List<LinkedHashMap>) JSONHandler.readJSONFile("stops.json");
 		for (LinkedHashMap m : stopsJSON) {
 			int id = Integer.parseInt(m.get("id").toString());
-			String name = m.get("name").toString();
-			double lng = Double.parseDouble(m.get("long").toString());
-			double lat = Double.parseDouble(m.get("lat").toString());
+			
 			if (id < 0)
 				throw new IllegalArgumentException("id can't be negative");
 			else {
+				String name = m.get("name").toString();
+				double lng = Double.parseDouble(m.get("long").toString());
+				double lat = Double.parseDouble(m.get("lat").toString());
 				stops.add(new Stop(id,name,lng,lat));
 			}
 		}
@@ -101,4 +106,19 @@ public class StopService implements IStopService {
 		return s;
 	}
 	
+	/**
+	 *@param routeId
+	 *@return {@link ArrayList} containing {@link Stop} of the specific {@link Route}
+	 */
+	@Override
+	public ArrayList<Stop> getStopsByRouteId(int routeId){
+		if(routeId < 0) throw new IllegalArgumentException("Id should've been positive");
+		Route r = routeService.getById(routeId);
+		LinkedList<Integer> stopIds = r.getStops();
+		ArrayList<Stop> stops = new ArrayList<Stop>();
+		for(Integer sId:stopIds) {
+			stops.add(getById(sId));
+		}
+		return stops;
+	}
 }
