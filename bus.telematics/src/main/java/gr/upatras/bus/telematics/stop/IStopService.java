@@ -1,6 +1,8 @@
 package gr.upatras.bus.telematics.stop;
 
+import java.util.ArrayList;
 import java.util.List;
+import gr.upatras.bus.telematics.route.*;
 
 /**
  * @author jlaza
@@ -37,6 +39,11 @@ public interface IStopService {
 	 */
 	Void deleteStop(int id);
 	
-//	List<Route> getRoutes(int id);
+	
+	/**
+	 * @param routeId
+	 * @return {@link ArrayList} containing {@link Stop} of the specific {@link Route}
+	 */
+	ArrayList<Stop> getStopsByRouteId(int routeId);
 
 }
