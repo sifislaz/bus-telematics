@@ -157,8 +157,8 @@ public class StopController {
 			@ApiResponse(code = 409, message = "Conflict", response = Error.class),
 			@ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
 	})
-	@RequestMapping(value="/stop/route", params="routeId", produces= {"application/json;charset=utf-8"}, method = RequestMethod.GET)
-	public List<Stop> getStopsByRoute(@ApiParam(value="Route ID", required=true) @RequestParam("routeId") int routeId){
+	@RequestMapping(value="/stop/route/{routeId}", produces= {"application/json;charset=utf-8"}, method = RequestMethod.GET)
+	public List<Stop> getStopsByRoute(@ApiParam(value="Route ID", required=true) @PathVariable("routeId") int routeId){
 		log.info(String.format("Will return stops of route %s", routeId));
 		List<Stop> stops = stopService.getStopsByRouteId(routeId);
 		return stops;
