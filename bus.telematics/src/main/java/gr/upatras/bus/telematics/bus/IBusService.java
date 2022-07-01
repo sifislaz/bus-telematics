@@ -39,7 +39,7 @@ public interface IBusService {
 	 * @param the id of the {@link Bus} to be deleted
 	 */
 	Void deleteBus(int id);
+	public apiClass getTime(String origin,String destination)throws IOException, InterruptedException, ParseException;
 
-
-	String api_call(String origin,String destination) throws IOException, InterruptedException, ParseException;
+	
 }

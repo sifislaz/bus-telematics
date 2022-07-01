@@ -160,9 +160,9 @@ public class BusController {
 	 * @throws InterruptedException 
 	 * @throws IOException 
 	 */
-	@ApiOperation(value = "Return estimated time", notes = "This operation return estimated time ", response = String.class)
+	@ApiOperation(value = "Return estimated time", notes = "This operation return estimated time ", response = apiClass.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Success", response = String.class ),
+			@ApiResponse(code = 200, message = "Success", response = apiClass.class ),
 			@ApiResponse(code = 400, message = "Bad Request", response = Error.class),
 			@ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
 			@ApiResponse(code = 403, message = "Forbidden", response = Error.class),
@@ -172,12 +172,13 @@ public class BusController {
 			@ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
 	})
 	@RequestMapping(value = "/bus/{origin}/{destination}", produces = { "application/json;charset=utf-8" }, method = RequestMethod.GET)
-	public String api_call(
+	public apiClass calcTime(
 			@ApiParam(value = "origin", required = true) @PathVariable("origin") String origin,
 			@ApiParam(value = "destination", required = true) @PathVariable("destination") String destination)
 			 throws IOException, InterruptedException, ParseException { 
-		String estimatedtime = busService.api_call(origin,destination);  // gets buses
-		return estimatedtime;  // returns buses
+		  // gets buses
+		apiClass obj=busService.getTime(origin,destination);
+		return obj;  // returns buses
 	}
 	
 

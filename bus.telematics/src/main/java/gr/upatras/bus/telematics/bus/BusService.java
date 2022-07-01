@@ -112,31 +112,13 @@ public class BusService implements IBusService {
 		return null;
 	}
 	
+	public apiClass getTime(String origin,String destination) throws IOException, InterruptedException, ParseException {
+		apiClass temp= new apiClass(origin,destination);
+		return temp;
+	}
+	
 	// function that gets an origin and a destination and return the estimated time (as a string) between those two points
 	//origin and destination can be city names or coordinates 
 	
-	public String api_call(String origin,String destination) throws IOException, InterruptedException, ParseException {
-		
 
-		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create("https://maps.googleapis.com/maps/api/directions/json?origin="+origin+"&destination="+destination+"&key=AIzaSyAnc0RzsD1qvac6KQl0G8JJmxNmd7H43ic"))
-				.method("GET", HttpRequest.BodyPublishers.noBody())
-				.build();
-		HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-		String record=response.body();
-		JSONObject object = (JSONObject) new JSONParser().parse(response.body());
-		JSONArray routes = (JSONArray) object.get("routes");	
-		JSONObject route0 = (JSONObject) routes.get(0);
-		JSONArray  legs = (JSONArray) route0.get("legs");
-		JSONObject legs0 = (JSONObject) legs.get(0);
-		
-		String duration = legs0.get("duration").toString();
-		ObjectMapper objectMapper = new ObjectMapper();
-		HashMap<String, String> tempMap = objectMapper.readValue(duration,
-		            new TypeReference<HashMap<String, String>>() {
-		            });
-		System.out.println(tempMap.get("text"));
-		return tempMap.get("text");
-		 
-	}
 }
