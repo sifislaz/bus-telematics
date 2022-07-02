@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
+import gr.upatras.bus.telematics.simulation.*;
 
 @SpringBootApplication
 public class Application {
@@ -39,8 +39,9 @@ public class Application {
 //			stopInitializer();
 			routeInitializer();
 		}
-		
 		SpringApplication.run(Application.class, args);
+		simulation t1= new simulation();
+		t1.start();
 	}
 	
 	/**

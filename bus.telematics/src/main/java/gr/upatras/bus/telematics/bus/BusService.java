@@ -29,8 +29,10 @@ import gr.upatras.bus.telematics.json.JSONHandler;
 @Service
 public class BusService implements IBusService {
 	// private IRouteService routeService;
+	
 	List<LinkedHashMap> busesJSON;
-	ArrayList<Bus> buses = new ArrayList<Bus>();
+	
+	public ArrayList<Bus> buses = new ArrayList<Bus>();
 
 	public BusService() {
 		super();
