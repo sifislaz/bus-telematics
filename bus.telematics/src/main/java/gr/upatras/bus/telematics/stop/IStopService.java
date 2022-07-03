@@ -1,7 +1,12 @@
 package gr.upatras.bus.telematics.stop;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.simple.parser.ParseException;
+
+import gr.upatras.bus.telematics.bus.apiClass;
 import gr.upatras.bus.telematics.route.*;
 
 /**
@@ -45,5 +50,7 @@ public interface IStopService {
 	 * @return {@link ArrayList} containing {@link Stop} of the specific {@link Route}
 	 */
 	ArrayList<Stop> getStopsByRouteId(int routeId);
+
+	ArrayList<apiClass>  getTime(String Stopname)throws IOException, InterruptedException, ParseException;
 
 }

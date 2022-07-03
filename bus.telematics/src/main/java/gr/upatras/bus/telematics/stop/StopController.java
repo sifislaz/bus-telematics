@@ -1,5 +1,6 @@
 package gr.upatras.bus.telematics.stop;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import gr.upatras.bus.telematics.bus.Bus;
+import gr.upatras.bus.telematics.bus.apiClass;
 import io.swagger.annotations.*;
+
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,4 +167,34 @@ public class StopController {
 		List<Stop> stops = stopService.getStopsByRouteId(routeId);
 		return stops;
 	}
+	
+	
+	
+
+	/**
+	 * @return List<{@link Bus}>
+	 * @throws ParseException 
+	 * @throws InterruptedException 
+	 * @throws IOException 
+	 */
+	@ApiOperation(value = "Return estimated time", notes = "This operation return estimated time ", response = apiClass.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Success", response = apiClass.class ),
+			@ApiResponse(code = 400, message = "Bad Request", response = Error.class),
+			@ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
+			@ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+			@ApiResponse(code = 404, message = "Not Found", response = Error.class),
+			@ApiResponse(code = 405, message = "Method Not allowed", response = Error.class),
+			@ApiResponse(code = 409, message = "Conflict", response = Error.class),
+			@ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
+	})
+	@RequestMapping(value = "/stop/name/{Stopname}", produces = { "application/json;charset=utf-8" }, method = RequestMethod.GET)
+	public ArrayList<apiClass> calcTime(
+			@ApiParam(value = "Stopname", required = true) @PathVariable("Stopname") String Stopname)
+			 throws IOException, InterruptedException, ParseException { 
+		  // gets buses
+		ArrayList<apiClass> obj=stopService.getTime(Stopname);
+		return obj;  // returns buses
+	}
+	
 }

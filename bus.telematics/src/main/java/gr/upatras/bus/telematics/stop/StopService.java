@@ -1,13 +1,16 @@
 package gr.upatras.bus.telematics.stop;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.LinkedHashMap;
 
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import gr.upatras.bus.telematics.bus.apiClass;
 import gr.upatras.bus.telematics.json.JSONHandler;
 import gr.upatras.bus.telematics.route.*;
 
@@ -120,5 +123,55 @@ public class StopService implements IStopService {
 			stops.add(getById(sId));
 		}
 		return stops;
+	}
+	
+	
+	
+	public ArrayList<apiClass> getTime(String Stopname) throws IOException, InterruptedException, ParseException {
+		int Stop_id=-1;
+		String cord="";
+		
+		//finds the id of the stop
+		for(Stop s : stops) {
+			if(s.getName().equals(Stopname)) {
+				Stop_id=s.getId();
+				cord=Double.toString(s.getLongitude())+","+Double.toString(s.getLatitude());
+				
+			}
+			
+		
+		}
+		// find the routes that contain the id of the stop
+		ArrayList<Integer> routelst=new ArrayList();
+		List<LinkedHashMap> routeJSON = (List<LinkedHashMap>) JSONHandler.readJSONFile("routes.json");
+		for (int i=0;i<routeJSON.size();i++) {
+			
+			ArrayList<Integer> stList = (ArrayList<Integer>) routeJSON.get(i).get("stops");
+			if(stList.contains(Stop_id)) {
+				int id=(Integer)routeJSON.get(i).get("id");
+				routelst.add(id);
+				
+			}	
+		}
+		
+		// finds busses that have that route, gets the coordinates of the busses and calculates time
+		ArrayList<Integer> buslst=new ArrayList();
+		ArrayList<String> buslstCord=new ArrayList();
+		ArrayList<apiClass> time=new ArrayList();
+		List<LinkedHashMap> busJSON = (List<LinkedHashMap>) JSONHandler.readJSONFile("bus.json");
+		for (int i=0;i<busJSON.size();i++) {
+			int id=(Integer)busJSON.get(i).get("routeId");
+			if(routelst.contains(id)) {
+				buslst.add((Integer)busJSON.get(i).get("id"));
+				buslstCord.add(busJSON.get(i).get("long").toString()+","+busJSON.get(i).get("lat").toString());
+			}
+		}
+		System.out.println(buslstCord.get(0));
+		System.out.println(cord);
+		for(int i=0;i<buslst.size();i++) {
+		apiClass temp= new apiClass(buslstCord.get(0),cord);
+		time.add(temp);
+		}
+		return time;
 	}
 }

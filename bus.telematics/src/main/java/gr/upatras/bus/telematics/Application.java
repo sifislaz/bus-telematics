@@ -43,9 +43,9 @@ public class Application {
 			routeInitializer();
 			
 		}
-		busInitializer(10);
+		//busInitializer(10);
 		SpringApplication.run(Application.class, args);
-		createDaemon();
+		//createDaemon();
 	}
 	
 	private static void createDaemon() {
