@@ -7,6 +7,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,9 @@ import org.slf4j.LoggerFactory;
  * @author jlaza
  *
  */
+
 @RestController
+@Scope("prototype")
 public class BusController {
 	@Autowired
 	private IBusService busService;
@@ -48,6 +51,7 @@ public class BusController {
 	})
 	@RequestMapping(value = "/bus/", produces = { "application/json;charset=utf-8" }, method = RequestMethod.GET)
 	public List<Bus> getBus() {
+		
 		List<Bus> buses = busService.getAll();  // gets buses
 		return buses;  // returns buses
 	}
@@ -73,6 +77,7 @@ public class BusController {
 			@ApiParam(value = "Identifier of Bus", required = true) @PathVariable("id") int id) {
 		log.info(String.format("Will return bus with id %s", id));  // update log
 		Bus bus = busService.getById(id);  // get bus with specific id
+		
 		return bus;  // return bus
 	}
 
@@ -145,6 +150,7 @@ public class BusController {
 	})
 	@RequestMapping(value = "/bus/{id}", produces = { "application/json;charset=utf-8" }, consumes = {
 			"application/json;charset=utf-8" }, method = RequestMethod.PATCH)
+	public
 	ResponseEntity<Bus> patchBus(
 			@ApiParam(value = "The Bus to be updated", required = true) @RequestBody Bus b,
 			@ApiParam(value = "Identifier of the Bus", required = true) @PathVariable("id") int id) {

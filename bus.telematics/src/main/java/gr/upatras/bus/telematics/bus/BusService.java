@@ -15,6 +15,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -27,8 +28,12 @@ import gr.upatras.bus.telematics.json.JSONHandler;
  *
  */
 @Service
+
+@Scope("prototype")
 public class BusService implements IBusService {
 	// private IRouteService routeService;
+	
+	
 	
 	List<LinkedHashMap> busesJSON;
 	
@@ -82,6 +87,7 @@ public class BusService implements IBusService {
 	@Override
 	public Bus createBus(Bus b) {
 		buses.add(b);
+		JSONHandler.createJSONFile("bus.json", buses);
 		return b;
 	}
 	
@@ -108,19 +114,43 @@ public class BusService implements IBusService {
 		for (Bus b : buses) {
 			if (b.getId() == id) {
 				buses.remove(b);
+				JSONHandler.createJSONFile("bus.json", buses);
 				break;
 			}
+			
 		}
 		return null;
 	}
+	
+	// function that gets an origin and a destination and return the estimated time (as a string) between those two points
+	//origin and destination can be city names or coordinates 
 	
 	public apiClass getTime(String origin,String destination) throws IOException, InterruptedException, ParseException {
 		apiClass temp= new apiClass(origin,destination);
 		return temp;
 	}
 	
-	// function that gets an origin and a destination and return the estimated time (as a string) between those two points
-	//origin and destination can be city names or coordinates 
+	public void updateBus (int id,Bus buss){
+		int counter=0;
+		for (Bus b : buses) {
+			
+			if (b.getId() == id) {
+				buses.remove(b);
+				buses.add(counter,buss);
+				break;
+			}
+			counter++;
+		}
+		
+		for (Bus b : buses) {
+			System.out.println(b.getId());
+			System.out.println(b.getRouteId());
+		}
+		JSONHandler.createJSONFile("bus.json", buses);
+		
+		}
+	
+
 	
 
 }

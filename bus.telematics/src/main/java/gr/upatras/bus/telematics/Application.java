@@ -38,10 +38,12 @@ public class Application {
 		if(init) {
 //			stopInitializer();
 			routeInitializer();
+			
 		}
+		busInitializer(10);
 		SpringApplication.run(Application.class, args);
-		simulation t1= new simulation();
-		t1.start();
+		Simulation t1= new Simulation();
+		
 	}
 	
 	/**

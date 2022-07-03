@@ -42,5 +42,8 @@ public interface IBusService {
 	Void deleteBus(int id);
 	public apiClass getTime(String origin,String destination)throws IOException, InterruptedException, ParseException;
 
+
+	void updateBus(int i, Bus b1);
+
 	
 }

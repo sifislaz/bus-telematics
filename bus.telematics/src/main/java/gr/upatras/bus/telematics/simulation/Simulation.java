@@ -3,11 +3,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Scanner;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
 import gr.upatras.bus.telematics.bus.*;
@@ -16,17 +19,35 @@ import gr.upatras.bus.telematics.route.Route;
 import gr.upatras.bus.telematics.stop.Stop;
 
 
-public class simulation extends Thread{
-
+public class Simulation {
 	
+	
+	public Simulation(){
+		run();
+	}
+	
+
 	BusService busService= new BusService() ;
 	
 	
 	
-	 @Override
+	
 	public void run() {
-		 	Bus b1 = busService.getById(1008); 
+		 Scanner sc= new Scanner(System.in);
+		 sc.nextInt();
+		 
+
+		 AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+
+		 context.scan("gr.upatras.bus.telematics.bus");
+		 context.refresh();
+		 BusService bs = context.getBean(BusService.class);
+		 	Bus b1 = bs.getById(1008); 
+		 	
+		 System.out.println(b1);
+		// bs.getById(1008);
 		 	b1.setRouteId(201);
+		 	
 		 	int counter_max=getNumOfStops( b1);
 		 	int counter=0;
             	while(counter!=counter_max-1) {
@@ -46,7 +67,12 @@ public class simulation extends Thread{
             		e.printStackTrace();
             	}
             	
-	}}
+            	
+	}
+            	System.out.println(b1.getRouteId());
+       		 
+            	bs.updateBus(1008,b1);    
+            	}
 	 
 	 
 	 // gets the number of stops 
@@ -70,6 +96,11 @@ public class simulation extends Thread{
 	   Object long_or= stopsJSON.get(n).get("long");
 	   Object lat_or= stopsJSON.get(n).get("lat");
 	   Object name_or= stopsJSON.get(n).get("name");
+	   b.setLongitude(Double.parseDouble(long_or.toString()));
+	   b.setLatitude(Double.parseDouble(lat_or.toString()));
+	   
+	   
+
 	   Object long_de= stopsJSON.get(n+1).get("long");
 	   Object lat_de= stopsJSON.get(n+1).get("lat");
 	   Object name_de= stopsJSON.get(n+1).get("name");
