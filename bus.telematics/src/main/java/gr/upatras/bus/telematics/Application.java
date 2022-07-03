@@ -28,6 +28,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimerTask;
+import java.util.Timer;
+
 import gr.upatras.bus.telematics.simulation.*;
 
 @SpringBootApplication
@@ -42,8 +45,13 @@ public class Application {
 		}
 		busInitializer(10);
 		SpringApplication.run(Application.class, args);
-		Simulation t1= new Simulation();
-		
+		createDaemon();
+	}
+	
+	private static void createDaemon() {
+		Timer timer = new Timer();
+		TimerTask sim = new startSimulation();
+		timer.schedule(sim, 5000, 5000);
 	}
 	
 	/**
@@ -127,6 +135,12 @@ public class Application {
 		}
 		JSONHandler.createJSONFile("routes.json", routes);
 	}
-		
 	
+}
+
+class startSimulation extends TimerTask{
+	public void run() {
+		Simulation s = new Simulation();
+		s.start();
+	}
 }
