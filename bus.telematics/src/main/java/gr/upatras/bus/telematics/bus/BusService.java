@@ -150,6 +150,22 @@ public class BusService implements IBusService {
 		
 		}
 	
+	
+	
+	public ArrayList<Integer> getBusIds(){
+		ArrayList<Integer> bus_ids = new ArrayList<Integer>();
+		int id;
+		for (Bus b : buses) {
+			id=b.getId();
+			bus_ids.add(id);
+		}
+		
+		
+		
+		return bus_ids;
+		
+	}
+	
 
 	
 

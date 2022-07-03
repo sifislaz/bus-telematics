@@ -36,13 +36,17 @@ public class Simulation {
 		 Scanner sc= new Scanner(System.in);
 		 sc.nextInt();
 		 
-
+		 ArrayList<Integer> ids = new ArrayList<Integer>();
 		 AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 
 		 context.scan("gr.upatras.bus.telematics.bus");
 		 context.refresh();
 		 BusService bs = context.getBean(BusService.class);
-		 	Bus b1 = bs.getById(1008); 
+		 	ids=bs.getBusIds();
+		 	System.out.println(ids);
+		 	int index = (int)(Math.random() * ids.size());
+		 	System.out.println(ids.get(index));
+		 	Bus b1 = bs.getById(ids.get(index)); 
 		 	
 		 System.out.println(b1);
 		// bs.getById(1008);
