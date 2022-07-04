@@ -1,0 +1,259 @@
+[1mdiff --git a/bus.telematics/bus.json b/bus.telematics/bus.json[m
+[1mindex 2a5961d..6e5f1d7 100644[m
+[1m--- a/bus.telematics/bus.json[m
+[1m+++ b/bus.telematics/bus.json[m
+[36m@@ -1 +1 @@[m
+[31m-[{"id":1001,"routeId":902,"long":38.260159,"lat":21.742684},{"id":1002,"routeId":0,"long":38.27151,"lat":21.75699},{"id":1003,"routeId":901,"long":38.25267,"lat":21.736781},{"id":1004,"routeId":202,"long":38.243265,"lat":21.731886},{"id":1005,"routeId":609,"long":38.256142,"lat":21.745367},{"id":1006,"routeId":901,"long":38.260293,"lat":21.742734},{"id":1007,"routeId":202,"long":38.264645,"lat":21.754793},{"id":1008,"routeId":0,"long":38.27151,"lat":21.75699},{"id":1009,"routeId":201,"long":38.258227,"lat":21.749348},{"id":1010,"routeId":0,"long":38.27151,"lat":21.75699}][m
+\ No newline at end of file[m
+[32m+[m[32m[{"id":1001,"routeId":0,"long":38.27151,"lat":21.75699},{"id":1002,"routeId":0,"long":38.27151,"lat":21.75699},{"id":1003,"routeId":0,"long":38.27151,"lat":21.75699},{"id":1004,"routeId":902,"long":38.260159,"lat":21.742684},{"id":1005,"routeId":0,"long":38.27151,"lat":21.75699},{"id":1006,"routeId":0,"long":38.27151,"lat":21.75699},{"id":1007,"routeId":0,"long":38.27151,"lat":21.75699},{"id":1008,"routeId":0,"long":38.27151,"lat":21.75699},{"id":1009,"routeId":0,"long":38.27151,"lat":21.75699},{"id":1010,"routeId":0,"long":38.27151,"lat":21.75699}][m
+\ No newline at end of file[m
+[1mdiff --git a/bus.telematics/src/main/java/gr/upatras/bus/telematics/Application.java b/bus.telematics/src/main/java/gr/upatras/bus/telematics/Application.java[m
+[1mindex 62d1f5f..8b977e5 100644[m
+[1m--- a/bus.telematics/src/main/java/gr/upatras/bus/telematics/Application.java[m
+[1m+++ b/bus.telematics/src/main/java/gr/upatras/bus/telematics/Application.java[m
+[36m@@ -39,7 +39,21 @@[m [mpublic class Application {[m
+ [m
+ 		busInitializer(10);[m
+ 		SpringApplication.run(Application.class, args);[m
+[31m-		createDaemon();[m
+[32m+[m[32m////		createDaemon();[m[41m[m
+[32m+[m[32m//		Simulation s = new Simulation();[m[41m[m
+[32m+[m[32m//		s.start();[m[41m[m
+[32m+[m[32m//		Simulation s2 = new Simulation();[m[41m[m
+[32m+[m[32m//		s2.start();[m[41m[m
+[32m+[m		[32mfor(int i=0;i<2;i++) {[m[41m[m
+[32m+[m	[32m        Simulation s1= new Simulation();[m[41m[m
+[32m+[m	[32m        s1.start();[m[41m[m
+[32m+[m	[32m        try {[m[41m[m
+[32m+[m				[32ms1.join();[m[41m[m
+[32m+[m			[32m} catch (InterruptedException e) {[m[41m[m
+[32m+[m				[32me.printStackTrace();[m[41m[m
+[32m+[m			[32m}[m[41m[m
+[32m+[m[41m[m
+[32m+[m	[32m        }[m[41m[m
+ 	}[m
+ [m
+ 	/**[m
+[1mdiff --git a/bus.telematics/src/main/java/gr/upatras/bus/telematics/bus/BusService.java b/bus.telematics/src/main/java/gr/upatras/bus/telematics/bus/BusService.java[m
+[1mindex 0833729..cf8481e 100644[m
+[1m--- a/bus.telematics/src/main/java/gr/upatras/bus/telematics/bus/BusService.java[m
+[1m+++ b/bus.telematics/src/main/java/gr/upatras/bus/telematics/bus/BusService.java[m
+[36m@@ -143,14 +143,13 @@[m [mpublic class BusService implements IBusService {[m
+ [m
+ 	/**[m
+ 	 * @param id[m
+[31m-	 * @param bus[m
+[31m-	 * Updates the {@link Bus} object which has the given id, with the attributes of the given {@link Bus} object[m
+[31m-	 * It also updates the JSON file with the new information[m
+[32m+[m	[32m * @param bus Updates the {@link Bus} object which has the given id, with the[m
+[32m+[m	[32m *            attributes of the given {@link Bus} object It also updates the[m
+[32m+[m	[32m *            JSON file with the new information[m
+ 	 */[m
+ 	public void updateBus(int id, Bus bus) {[m
+ 		int counter = 0;[m
+ 		for (Bus b : buses) {[m
+[31m-[m
+ 			if (b.getId() == id) {[m
+ 				buses.remove(b);[m
+ 				buses.add(counter, bus);[m
+[36m@@ -158,11 +157,6 @@[m [mpublic class BusService implements IBusService {[m
+ 			}[m
+ 			counter++;[m
+ 		}[m
+[31m-[m
+[31m-		for (Bus b : buses) {[m
+[31m-			System.out.println(b.getId());[m
+[31m-			System.out.println(b.getRouteId());[m
+[31m-		}[m
+ 		JSONHandler.createJSONFile("bus.json", buses);[m
+ [m
+ 	}[m
+[1mdiff --git a/bus.telematics/src/main/java/gr/upatras/bus/telematics/simulation/Simulation.java b/bus.telematics/src/main/java/gr/upatras/bus/telematics/simulation/Simulation.java[m
+[1mindex 738869e..40254bd 100644[m
+[1m--- a/bus.telematics/src/main/java/gr/upatras/bus/telematics/simulation/Simulation.java[m
+[1m+++ b/bus.telematics/src/main/java/gr/upatras/bus/telematics/simulation/Simulation.java[m
+[36m@@ -33,7 +33,12 @@[m [mpublic class Simulation extends Thread {[m
+ [m
+ 	@Override[m
+ 	public void run() {[m
+[31m-		[m
+[32m+[m		[32mtry {[m
+[32m+[m			[32mThread.sleep(500);[m
+[32m+[m		[32m}[m
+[32m+[m		[32mcatch(InterruptedException e) {[m
+[32m+[m			[32me.printStackTrace();[m
+[32m+[m		[32m}[m
+ 		ArrayList<Integer> ids = new ArrayList<Integer>();[m
+ 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();[m
+ [m
+[36m@@ -41,38 +46,36 @@[m [mpublic class Simulation extends Thread {[m
+ 		context.refresh();[m
+ 		BusService bs = context.getBean(BusService.class);[m
+ 		ids = bs.getBusIds();[m
+[31m-		System.out.println(ids);[m
+[32m+[m[32m//		System.out.println(ids);[m
+ 		// pick a random bus[m
+ 		int index = (int) (Math.random() * ids.size());[m
+[31m-		System.out.println(ids.get(index));[m
+[32m+[m[32m//		System.out.println(ids.get(index));[m
+ 		Bus b1 = bs.getById(ids.get(index));  [m
+ 		if (b1.getRouteId() != 0)  // if the bus has already a route assigned, cancel[m
+ 			return;[m
+[31m-		System.out.println(b1);[m
+[32m+[m[32m//		System.out.println(b1);[m
+ 		int routeId = routeIds.get((int) (Math.random() * routeIds.size()));  // pick a random route to assign[m
+[32m+[m[32m//		int routeId = 901;[m
+ 		b1.setRouteId(routeId);[m
+ [m
+ 		int counter_max = getNumOfStops(b1);[m
+ 		int counter = 0;[m
+ 		while (counter != counter_max - 1) {[m
+ 			try {[m
+[31m-				Thread.sleep(2500); // the trip duration between two stops[m
+[31m-			} catch (InterruptedException e) {[m
+[31m-				e.printStackTrace();[m
+[31m-			}[m
+[31m-			try {[m
+[31m-[m
+[32m+[m				[32mThread.sleep(5000);  // Trip duration between bus and the stop[m
+ 				print_stops(b1, counter);[m
+ 				bs.updateBus(b1.getId(), b1);[m
+ 				counter++;[m
+ [m
+[31m-			} catch (NullPointerException e) {[m
+[32m+[m			[32m} catch (Exception e) {[m
+ 				e.printStackTrace();[m
+ 			}[m
+ [m
+ 		}[m
+[32m+[m[41m		[m
+ 		b1.setRouteId(0);  // reset bus's route id[m
+[31m-		System.out.println(b1.getRouteId());[m
+[32m+[m		[32mbs.updateBus(b1.getId(), b1);[m
+[32m+[m[32m//		System.out.println(b1.getRouteId());[m
+ [m
+ 	}[m
+ [m
+[36m@@ -106,9 +109,9 @@[m [mpublic class Simulation extends Thread {[m
+ 		Object long_de = stopsJSON.get(n + 1).get("long");[m
+ 		Object lat_de = stopsJSON.get(n + 1).get("lat");[m
+ 		Object name_de = stopsJSON.get(n + 1).get("name");[m
+[31m-		System.out.println("bus is at " + name_or);[m
+[32m+[m		[32mSystem.out.println("bus "+b.getId()+" is at " + name_or);[m
+ 		System.out.println("next station is " + name_de);[m
+[31m-[m
+[32m+[m[41m		[m
+ 		try {[m
+ 			apiClass ap = new apiClass(long_or.toString() + "," + lat_or.toString(),[m
+ 					long_de.toString() + "," + lat_de.toString());[m
+[1mdiff --git a/bus.telematics/src/main/java/gr/upatras/bus/telematics/stop/IStopService.java b/bus.telematics/src/main/java/gr/upatras/bus/telematics/stop/IStopService.java[m
+[1mindex a9e9e11..544ec36 100644[m
+[1m--- a/bus.telematics/src/main/java/gr/upatras/bus/telematics/stop/IStopService.java[m
+[1m+++ b/bus.telematics/src/main/java/gr/upatras/bus/telematics/stop/IStopService.java[m
+[36m@@ -52,6 +52,13 @@[m [mpublic interface IStopService {[m
+ 	 */[m
+ 	ArrayList<Stop> getStopsByRouteId(int routeId);[m
+ [m
+[31m-	ArrayList<apiClass>  getTime(String Stopname)throws IOException, InterruptedException, ParseException;[m
+[32m+[m	[32m/**[m
+[32m+[m	[32m * @param stopId[m
+[32m+[m	[32m * @return[m
+[32m+[m	[32m * @throws IOException[m
+[32m+[m	[32m * @throws InterruptedException[m
+[32m+[m	[32m * @throws ParseException[m
+[32m+[m	[32m */[m
+[32m+[m	[32mArrayList<apiClass>  getTime(int stopId)throws IOException, InterruptedException, ParseException;[m
+ [m
+ }[m
+[1mdiff --git a/bus.telematics/src/main/java/gr/upatras/bus/telematics/stop/StopController.java b/bus.telematics/src/main/java/gr/upatras/bus/telematics/stop/StopController.java[m
+[1mindex 438fda9..1031ce4 100644[m
+[1m--- a/bus.telematics/src/main/java/gr/upatras/bus/telematics/stop/StopController.java[m
+[1m+++ b/bus.telematics/src/main/java/gr/upatras/bus/telematics/stop/StopController.java[m
+[36m@@ -4,6 +4,7 @@[m [mimport java.io.IOException;[m
+ import java.util.ArrayList;[m
+ import java.util.List;[m
+ import org.springframework.beans.factory.annotation.Autowired;[m
+[32m+[m[32mimport org.springframework.context.annotation.Scope;[m
+ import org.springframework.http.HttpStatus;[m
+ import org.springframework.http.ResponseEntity;[m
+ import org.springframework.web.bind.annotation.GetMapping;[m
+[36m@@ -28,6 +29,7 @@[m [mimport org.slf4j.LoggerFactory;[m
+  * @author sotirissid[m
+  */[m
+ @RestController[m
+[32m+[m[32m@Scope("prototype")[m
+ public class StopController {[m
+ 	@Autowired[m
+ 	private IStopService stopService;[m
+[36m@@ -190,12 +192,12 @@[m [mpublic class StopController {[m
+ 			@ApiResponse(code = 409, message = "Conflict", response = Error.class),[m
+ 			@ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)[m
+ 	})[m
+[31m-	@RequestMapping(value = "/stop/name/{Stopname}", produces = { "application/json;charset=utf-8" }, method = RequestMethod.GET)[m
+[32m+[m	[32m@RequestMapping(value = "/stop/name/{stopId}", produces = { "application/json;charset=utf-8" }, method = RequestMethod.GET)[m
+ 	public ResponseEntity calcTime([m
+[31m-			@ApiParam(value = "Stopname", required = true) @PathVariable("Stopname") String Stopname)[m
+[32m+[m			[32m@ApiParam(value = "stopId", required = true) @PathVariable("stopId") int stopId)[m
+ 			 throws IOException, InterruptedException, ParseException, JSONException { [m
+ 		  // gets buses[m
+[31m-		ArrayList<apiClass> obj=stopService.getTime(Stopname);[m
+[32m+[m		[32mArrayList<apiClass> obj=stopService.getTime(stopId);[m
+ 		 if(obj == null) {[m
+ 			 String message="{\"message\":\"The is no bus currently that services this stop\"}";[m
+ 			 [m
+[1mdiff --git a/bus.telematics/src/main/java/gr/upatras/bus/telematics/stop/StopService.java b/bus.telematics/src/main/java/gr/upatras/bus/telematics/stop/StopService.java[m
+[1mindex 680e452..77b6aa4 100644[m
+[1m--- a/bus.telematics/src/main/java/gr/upatras/bus/telematics/stop/StopService.java[m
+[1m+++ b/bus.telematics/src/main/java/gr/upatras/bus/telematics/stop/StopService.java[m
+[36m@@ -10,6 +10,7 @@[m [mimport org.json.simple.parser.ParseException;[m
+ import org.slf4j.Logger;[m
+ import org.slf4j.LoggerFactory;[m
+ import org.springframework.beans.factory.annotation.Autowired;[m
+[32m+[m[32mimport org.springframework.context.annotation.Scope;[m
+ import org.springframework.stereotype.Service;[m
+ [m
+ import gr.upatras.bus.telematics.bus.apiClass;[m
+[36m@@ -22,6 +23,7 @@[m [mimport gr.upatras.bus.telematics.route.*;[m
+  *[m
+  */[m
+ @Service[m
+[32m+[m[32m@Scope("prototype")[m
+ public class StopService implements IStopService {[m
+ [m
+ 	@Autowired[m
+[36m@@ -138,14 +140,12 @@[m [mpublic class StopService implements IStopService {[m
+ 	 * @return the {@link ArrayList} of the time needed for the {@link Bus} that[m
+ 	 *         serves a route to arrive at the {@link Stop}[m
+ 	 */[m
+[31m-	public ArrayList<apiClass> getTime(String Stopname) throws IOException, InterruptedException, ParseException {[m
+[31m-		int Stop_id = -1;[m
+[32m+[m	[32mpublic ArrayList<apiClass> getTime(int stopId) throws IOException, InterruptedException, ParseException {[m
+ 		String cord = "";[m
+ [m
+[31m-		// finds the id of the stop[m
+[32m+[m		[32m// Get the coordinations[m
+ 		for (Stop s : stops) {[m
+[31m-			if (s.getName().equals(Stopname)) {[m
+[31m-				Stop_id = s.getId();[m
+[32m+[m			[32mif (s.getId()==stopId) {[m
+ 				cord = Double.toString(s.getLongitude()) + "," + Double.toString(s.getLatitude());[m
+ 				[m
+ 			}[m
+[36m@@ -157,7 +157,7 @@[m [mpublic class StopService implements IStopService {[m
+ 		for (int i = 0; i < routeJSON.size(); i++) {[m
+ [m
+ 			ArrayList<Integer> stList = (ArrayList<Integer>) routeJSON.get(i).get("stops");[m
+[31m-			if (stList.contains(Stop_id)) {[m
+[32m+[m			[32mif (stList.contains(stopId)) {[m
+ 				int id = (Integer) routeJSON.get(i).get("id");[m
+ 				routelst.add(id);[m
+ [m
+[36m@@ -189,7 +189,7 @@[m [mpublic class StopService implements IStopService {[m
+ 						[m
+ 					}[m
+ 					int indexOfBus=stoplst.indexOf(busStop_id);[m
+[31m-					int indexOfLocation=stoplst.indexOf(Stop_id);[m
+[32m+[m					[32mint indexOfLocation=stoplst.indexOf(stopId);[m
+ 					System.out.println("index bus "+indexOfBus);[m
+ 					System.out.println("index location "+indexOfLocation);[m
+ 					//if the stop location is further away than bus location[m
