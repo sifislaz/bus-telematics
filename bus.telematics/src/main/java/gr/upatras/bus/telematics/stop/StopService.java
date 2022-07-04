@@ -144,6 +144,7 @@ public class StopService implements IStopService {
 			if (s.getName().equals(Stopname)) {
 				Stop_id = s.getId();
 				cord = Double.toString(s.getLongitude()) + "," + Double.toString(s.getLatitude());
+				
 			}
 
 		}
@@ -159,23 +160,58 @@ public class StopService implements IStopService {
 
 			}
 		}
-
+		
 		// finds buses that have that route, gets their coordinates and calculates time
 		ArrayList<Integer> buslst = new ArrayList();
 		ArrayList<String> buslstCord = new ArrayList();
 		ArrayList<apiClass> time = new ArrayList();
+		ArrayList<Integer> routeIdforCall=new ArrayList();
 		List<LinkedHashMap> busJSON = (List<LinkedHashMap>) JSONHandler.readJSONFile("bus.json");
 		for (int i = 0; i < busJSON.size(); i++) {
 			int id = (Integer) busJSON.get(i).get("routeId");
 			if (routelst.contains(id)) {
-				buslst.add((Integer) busJSON.get(i).get("id"));
-				buslstCord.add(busJSON.get(i).get("long").toString() + "," + busJSON.get(i).get("lat").toString());
+				//find the Stop of the current buss to check if it passed the stop
+				double cur_long=(double) busJSON.get(i).get("long");
+				double cur_lat=(double) busJSON.get(i).get("lat");
+				for (Stop s : stops) {
+				if(s.getLongitude()==cur_long && s.getLatitude()==cur_lat) {
+					int busStop_id=s.getId(); //gets the stop that the bus is right now
+					System.out.println("Bus stop id "+busStop_id);
+					ArrayList<Stop> stoparray = new ArrayList<Stop>();
+					ArrayList<Integer> stoplst = new ArrayList<Integer>();
+					stoparray=getStopsByRouteId(id);
+					for(Stop ob : stoparray) {
+						stoplst.add(ob.getId());
+						
+					}
+					int indexOfBus=stoplst.indexOf(busStop_id);
+					int indexOfLocation=stoplst.indexOf(Stop_id);
+					System.out.println("index bus "+indexOfBus);
+					System.out.println("index location "+indexOfLocation);
+					//if the stop location is further away than bus location
+					if(indexOfLocation>indexOfBus) {
+						//add the busses to the list to call the api
+						routeIdforCall.add(id);
+						buslst.add((Integer) busJSON.get(i).get("id"));
+						buslstCord.add(busJSON.get(i).get("long").toString() + "," + busJSON.get(i).get("lat").toString()); //gets bus coords
+						
+					}
+					  
+				}
+				}
+				
+				
+
+				
+				
+				
+				
 			}
 		}
 		System.out.println(buslstCord.get(0));
 		System.out.println(cord);
 		for (int i = 0; i < buslst.size(); i++) {
-			apiClass temp = new apiClass(buslstCord.get(0), cord);
+			apiClass temp = new apiClass(buslstCord.get(i), cord,routeIdforCall.get(i));
 			time.add(temp);
 		}
 		return time;

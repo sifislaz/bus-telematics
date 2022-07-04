@@ -26,6 +26,19 @@ public class apiClass {
 	private String destination;
 	// time required to get from origin to destination
 	private String time;
+	//route id of bus
+	private int routeId;
+
+	
+	
+
+	public apiClass(String origin, String destination, int routeId) throws IOException, InterruptedException, ParseException {
+		super();
+		this.origin = origin;
+		this.destination = destination;
+		this.routeId = routeId;
+		this.time = this.api_call();
+	}
 
 	public apiClass(String origin, String destination) throws IOException, InterruptedException, ParseException {
 		super();
@@ -33,6 +46,11 @@ public class apiClass {
 		this.destination = destination;
 		this.time = this.api_call();
 	}
+	
+	public int getRouteId() {
+		return routeId;
+	}
+
 
 	public String getTime() {
 		return time;
