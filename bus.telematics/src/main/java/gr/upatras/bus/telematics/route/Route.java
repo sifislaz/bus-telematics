@@ -67,7 +67,7 @@ public class Route {
 	 */
 	public void addStop(int ind, int s) {
 		for(Integer temp : stopIds) {
-			if(temp == s) {
+			if(temp == s) {  // if it already exists, cancel
 				break;
 			}
 			else {

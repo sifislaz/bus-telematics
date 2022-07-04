@@ -19,19 +19,21 @@ import gr.upatras.bus.telematics.json.JSONHandler;
 import gr.upatras.bus.telematics.route.Route;
 import gr.upatras.bus.telematics.stop.Stop;
 
-public class Simulation extends Thread{
-	
-	ArrayList <Integer> routeIds = new ArrayList<Integer>();
-	
+/**
+ * @author jlaza
+ * @author sotirissid
+ */
+public class Simulation extends Thread {
+
+	ArrayList<Integer> routeIds = new ArrayList<Integer>();
+
 	public Simulation() {
 		initRoutes();
 	}
 
-	BusService busService = new BusService();
-
 	@Override
 	public void run() {
-
+		
 		ArrayList<Integer> ids = new ArrayList<Integer>();
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 
@@ -40,21 +42,22 @@ public class Simulation extends Thread{
 		BusService bs = context.getBean(BusService.class);
 		ids = bs.getBusIds();
 		System.out.println(ids);
+		// pick a random bus
 		int index = (int) (Math.random() * ids.size());
 		System.out.println(ids.get(index));
-		Bus b1 = bs.getById(ids.get(index));
-		if(b1.getRouteId()!=0) return;
+		Bus b1 = bs.getById(ids.get(index));  
+		if (b1.getRouteId() != 0)  // if the bus has already a route assigned, cancel
+			return;
 		System.out.println(b1);
-		int routeId = routeIds.get((int)(Math.random()*routeIds.size()));
+		int routeId = routeIds.get((int) (Math.random() * routeIds.size()));  // pick a random route to assign
 		b1.setRouteId(routeId);
 
 		int counter_max = getNumOfStops(b1);
 		int counter = 0;
 		while (counter != counter_max - 1) {
 			try {
-				Thread.sleep(2500);
+				Thread.sleep(2500); // the trip duration between two stops
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			try {
@@ -68,10 +71,9 @@ public class Simulation extends Thread{
 			}
 
 		}
-		b1.setRouteId(0);
+		b1.setRouteId(0);  // reset bus's route id
 		System.out.println(b1.getRouteId());
 
-		
 	}
 
 	// gets the number of stops
@@ -112,25 +114,22 @@ public class Simulation extends Thread{
 					long_de.toString() + "," + lat_de.toString());
 			System.out.println("time to arrive " + ap.getTime());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
-	
+
 	public void initRoutes() {
 		List<LinkedHashMap> routesJSON = (List<LinkedHashMap>) JSONHandler.readJSONFile("routes.json");
-		for(int i=0; i<routesJSON.size();i++) {
+		for (int i = 0; i < routesJSON.size(); i++) {
 			Object id = routesJSON.get(i).get("id");
 			routeIds.add(Integer.parseInt(id.toString()));
 		}
-		
+
 	}
 
 }

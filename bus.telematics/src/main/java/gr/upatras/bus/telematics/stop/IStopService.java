@@ -11,6 +11,7 @@ import gr.upatras.bus.telematics.route.*;
 
 /**
  * @author jlaza
+ * @author sotirissid
  *
  */
 public interface IStopService {
