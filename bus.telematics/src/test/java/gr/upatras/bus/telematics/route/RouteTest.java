@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * @author sotirissid
+ * Unit tests for the {@link Route} class
+ */
 class RouteTest {
 Route r= new Route(15,"start","destination");
 	@Test
