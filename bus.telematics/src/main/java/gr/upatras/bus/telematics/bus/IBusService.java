@@ -7,7 +7,7 @@ import org.json.simple.parser.ParseException;
 
 /**
  * @author jlaza
- *
+ * @author sotirissid
  */
 
 public interface IBusService {
@@ -43,6 +43,10 @@ public interface IBusService {
 	public apiClass getTime(String origin,String destination)throws IOException, InterruptedException, ParseException;
 
 
+	/**
+	 * @param i
+	 * @param b1
+	 */
 	void updateBus(int i, Bus b1);
 
 	

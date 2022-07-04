@@ -25,18 +25,16 @@ import gr.upatras.bus.telematics.json.JSONHandler;
 
 /**
  * @author jlaza
- *
+ * @author sotirissid
  */
-@Service
 
+@Service
 @Scope("prototype")
 public class BusService implements IBusService {
 	// private IRouteService routeService;
-	
-	
-	
+
 	List<LinkedHashMap> busesJSON;
-	
+
 	public ArrayList<Bus> buses = new ArrayList<Bus>();
 
 	public BusService() {
@@ -48,8 +46,10 @@ public class BusService implements IBusService {
 			double lng = Double.parseDouble(m.get("long").toString());
 			double lat = Double.parseDouble(m.get("lat").toString());
 			int routeId = Integer.parseInt(m.get("routeId").toString());
-			if(id < 0) throw new IllegalArgumentException("id can't be negative");
-			if(routeId < 0) throw new IllegalArgumentException("routeId can't be negative");
+			if (id < 0)
+				throw new IllegalArgumentException("id can't be negative");
+			if (routeId < 0)
+				throw new IllegalArgumentException("routeId can't be negative");
 			if (routeId == 0) {
 				buses.add(new Bus(id, lng, lat)); // Create the bus
 			} else {
@@ -71,7 +71,8 @@ public class BusService implements IBusService {
 	 */
 	@Override
 	public Bus getById(int id) {
-		if(id < 0) throw new IllegalArgumentException("id can't be negative");
+		if (id < 0)
+			throw new IllegalArgumentException("id can't be negative");
 		for (Bus b : buses) {
 			if (b.getId() == id) {
 				return b;
@@ -90,11 +91,11 @@ public class BusService implements IBusService {
 		JSONHandler.createJSONFile("bus.json", buses);
 		return b;
 	}
-	
+
 	/**
 	 * @param id
-	 *@param bus
-	 *@return the changed {@link Bus} with changed id
+	 * @param bus
+	 * @return the changed {@link Bus} with changed id
 	 */
 	@Override
 	public Bus editBus(int id, Bus bus) {
@@ -110,63 +111,75 @@ public class BusService implements IBusService {
 
 	@Override
 	public Void deleteBus(int id) {
-		if(id < 0) throw new IllegalArgumentException("id can't be negative");
+		if (id < 0)
+			throw new IllegalArgumentException("id can't be negative");
 		for (Bus b : buses) {
 			if (b.getId() == id) {
 				buses.remove(b);
 				JSONHandler.createJSONFile("bus.json", buses);
 				break;
 			}
-			
+
 		}
 		return null;
 	}
-	
-	// function that gets an origin and a destination and return the estimated time (as a string) between those two points
-	//origin and destination can be city names or coordinates 
-	
-	public apiClass getTime(String origin,String destination) throws IOException, InterruptedException, ParseException {
-		apiClass temp= new apiClass(origin,destination);
+
+	// function that gets an origin and a destination and return the estimated time
+	// (as a string) between those two points
+	// origin and destination can be city names or coordinates
+
+	/**
+	 * @param origin
+	 * @param destination
+	 * @return an {@link apiClass} object, containing the response of the Google API
+	 *         which contains the time needed to transport from origin to
+	 *         destination
+	 */
+	public apiClass getTime(String origin, String destination)
+			throws IOException, InterruptedException, ParseException {
+		apiClass temp = new apiClass(origin, destination);
 		return temp;
 	}
-	
-	public void updateBus (int id,Bus buss){
-		int counter=0;
+
+	/**
+	 * @param id
+	 * @param bus
+	 * Updates the {@link Bus} object which has the given id, with the attributes of the given {@link Bus} object
+	 * It also updates the JSON file with the new information
+	 */
+	public void updateBus(int id, Bus bus) {
+		int counter = 0;
 		for (Bus b : buses) {
-			
+
 			if (b.getId() == id) {
 				buses.remove(b);
-				buses.add(counter,buss);
+				buses.add(counter, bus);
 				break;
 			}
 			counter++;
 		}
-		
+
 		for (Bus b : buses) {
 			System.out.println(b.getId());
 			System.out.println(b.getRouteId());
 		}
 		JSONHandler.createJSONFile("bus.json", buses);
-		
-		}
-	
-	
-	
-	public ArrayList<Integer> getBusIds(){
+
+	}
+
+	/**
+	 * @return an {@link ArrayList} of the {@link Bus} IDs
+	 */
+	public ArrayList<Integer> getBusIds() {
 		ArrayList<Integer> bus_ids = new ArrayList<Integer>();
 		int id;
 		for (Bus b : buses) {
-			id=b.getId();
+			id = b.getId();
 			bus_ids.add(id);
 		}
-		
-		
-		
-		return bus_ids;
-		
-	}
-	
 
-	
+		return bus_ids;
+
+	}
 
 }

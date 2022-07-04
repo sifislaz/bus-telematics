@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author jlaza
- *
+ * @author sotirissid
  */
 @RestController
 public class StopController {
@@ -172,7 +172,7 @@ public class StopController {
 	
 
 	/**
-	 * @return List<{@link Bus}>
+	 * @return {@link ArrayList}<{@link Bus}>
 	 * @throws ParseException 
 	 * @throws InterruptedException 
 	 * @throws IOException 

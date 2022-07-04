@@ -19,6 +19,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class JSONHandler {
 	
+	/**
+	 * @param path
+	 * @param o
+	 * This method gets the path of the file to be created and the object
+	 * which will be transformed into JSON format and produces the file
+	 */
 	public static void createJSONFile(String path, Object o) {
 		ObjectMapper m = new ObjectMapper();
 		try {
@@ -29,6 +35,10 @@ public class JSONHandler {
 		}
 	}
 	
+	/**
+	 * @param path
+	 * @return the object that is produced from parsing the JSON file at the given path
+	 */
 	public static Object readJSONFile(String path) {
 		ObjectMapper m = new ObjectMapper();
 		try {

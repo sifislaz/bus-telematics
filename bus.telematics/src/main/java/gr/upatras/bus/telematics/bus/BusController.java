@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author jlaza
- *
+ * @author sotirissid
  */
 
 @RestController
