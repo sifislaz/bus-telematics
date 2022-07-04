@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.LinkedHashMap;
 
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,7 @@ public class StopService implements IStopService {
 	private IRouteService routeService; // Connection with route service
 	List<LinkedHashMap> stopsJSON; // Storage of stop data from JSON
 	ArrayList<Stop> stops = new ArrayList<Stop>(); // Stop instances created from JSON data
+	private static final Logger log = LoggerFactory.getLogger(StopController.class);
 
 	public StopService() {
 		super();
@@ -167,6 +170,7 @@ public class StopService implements IStopService {
 		ArrayList<apiClass> time = new ArrayList();
 		ArrayList<Integer> routeIdforCall=new ArrayList();
 		List<LinkedHashMap> busJSON = (List<LinkedHashMap>) JSONHandler.readJSONFile("bus.json");
+		try {
 		for (int i = 0; i < busJSON.size(); i++) {
 			int id = (Integer) busJSON.get(i).get("routeId");
 			if (routelst.contains(id)) {
@@ -213,6 +217,12 @@ public class StopService implements IStopService {
 		for (int i = 0; i < buslst.size(); i++) {
 			apiClass temp = new apiClass(buslstCord.get(i), cord,routeIdforCall.get(i));
 			time.add(temp);
+		}}
+		catch(Exception e){
+			System.out.println("The is no bus currently that services this stop");
+			log.info(String.format("The is no bus currently that services this stop"));
+			return null;
+			
 		}
 		return time;
 	}
