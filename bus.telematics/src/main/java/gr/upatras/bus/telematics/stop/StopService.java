@@ -10,6 +10,7 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import gr.upatras.bus.telematics.bus.apiClass;
@@ -22,6 +23,7 @@ import gr.upatras.bus.telematics.route.*;
  *
  */
 @Service
+@Scope("prototype")
 public class StopService implements IStopService {
 
 	@Autowired
@@ -138,16 +140,14 @@ public class StopService implements IStopService {
 	 * @return the {@link ArrayList} of the time needed for the {@link Bus} that
 	 *         serves a route to arrive at the {@link Stop}
 	 */
-	public ArrayList<apiClass> getTime(String Stopname) throws IOException, InterruptedException, ParseException {
-		int Stop_id = -1;
+	public ArrayList<apiClass> getTime(int stopId) throws IOException, InterruptedException, ParseException {
 		String cord = "";
 
-		// finds the id of the stop
+		// Get the coordinations
 		for (Stop s : stops) {
-			if (s.getName().equals(Stopname)) {
-				Stop_id = s.getId();
+			if (s.getId() == stopId) {
 				cord = Double.toString(s.getLongitude()) + "," + Double.toString(s.getLatitude());
-				
+
 			}
 
 		}
@@ -157,72 +157,67 @@ public class StopService implements IStopService {
 		for (int i = 0; i < routeJSON.size(); i++) {
 
 			ArrayList<Integer> stList = (ArrayList<Integer>) routeJSON.get(i).get("stops");
-			if (stList.contains(Stop_id)) {
+			if (stList.contains(stopId)) {
 				int id = (Integer) routeJSON.get(i).get("id");
 				routelst.add(id);
 
 			}
 		}
-		
+
 		// finds buses that have that route, gets their coordinates and calculates time
 		ArrayList<Integer> buslst = new ArrayList();
 		ArrayList<String> buslstCord = new ArrayList();
 		ArrayList<apiClass> time = new ArrayList();
-		ArrayList<Integer> routeIdforCall=new ArrayList();
+		ArrayList<Integer> routeIdforCall = new ArrayList();
 		List<LinkedHashMap> busJSON = (List<LinkedHashMap>) JSONHandler.readJSONFile("bus.json");
 		try {
-		for (int i = 0; i < busJSON.size(); i++) {
-			int id = (Integer) busJSON.get(i).get("routeId");
-			if (routelst.contains(id)) {
-				//find the Stop of the current buss to check if it passed the stop
-				double cur_long=(double) busJSON.get(i).get("long");
-				double cur_lat=(double) busJSON.get(i).get("lat");
-				for (Stop s : stops) {
-				if(s.getLongitude()==cur_long && s.getLatitude()==cur_lat) {
-					int busStop_id=s.getId(); //gets the stop that the bus is right now
-					System.out.println("Bus stop id "+busStop_id);
-					ArrayList<Stop> stoparray = new ArrayList<Stop>();
-					ArrayList<Integer> stoplst = new ArrayList<Integer>();
-					stoparray=getStopsByRouteId(id);
-					for(Stop ob : stoparray) {
-						stoplst.add(ob.getId());
-						
-					}
-					int indexOfBus=stoplst.indexOf(busStop_id);
-					int indexOfLocation=stoplst.indexOf(Stop_id);
-					System.out.println("index bus "+indexOfBus);
-					System.out.println("index location "+indexOfLocation);
-					//if the stop location is further away than bus location
-					if(indexOfLocation>indexOfBus) {
-						//add the busses to the list to call the api
-						routeIdforCall.add(id);
-						buslst.add((Integer) busJSON.get(i).get("id"));
-						buslstCord.add(busJSON.get(i).get("long").toString() + "," + busJSON.get(i).get("lat").toString()); //gets bus coords
-						
-					}
-					  
-				}
-				}
-				
-				
+			for (int i = 0; i < busJSON.size(); i++) {
+				int id = (Integer) busJSON.get(i).get("routeId");
+				if (routelst.contains(id)) {
+					// find the Stop of the current buss to check if it passed the stop
+					double cur_long = (double) busJSON.get(i).get("long");
+					double cur_lat = (double) busJSON.get(i).get("lat");
+					for (Stop s : stops) {
+						if (s.getLongitude() == cur_long && s.getLatitude() == cur_lat) {
+							int busStop_id = s.getId(); // gets the stop that the bus is right now
+							System.out.println("Bus stop id " + busStop_id);
+							ArrayList<Stop> stoparray = new ArrayList<Stop>();
+							ArrayList<Integer> stoplst = new ArrayList<Integer>();
+							stoparray = getStopsByRouteId(id);
+							for (Stop ob : stoparray) {
+								stoplst.add(ob.getId());
 
-				
-				
-				
-				
+							}
+							int indexOfBus = stoplst.indexOf(busStop_id);
+							int indexOfLocation = stoplst.indexOf(stopId);
+							System.out.println("index bus " + indexOfBus);
+							System.out.println("index location " + indexOfLocation);
+							// if the stop location is further away than bus location
+							if (indexOfLocation > indexOfBus) {
+								// add the buses to the list to call the api
+								routeIdforCall.add(id);
+								buslst.add((Integer) busJSON.get(i).get("id"));
+								buslstCord.add(busJSON.get(i).get("long").toString() + ","
+										+ busJSON.get(i).get("lat").toString()); // gets bus coords
+
+							}
+
+						}
+					}
+
+				}
 			}
-		}
-		System.out.println(buslstCord.get(0));
-		System.out.println(cord);
-		for (int i = 0; i < buslst.size(); i++) {
-			apiClass temp = new apiClass(buslstCord.get(i), cord,routeIdforCall.get(i));
-			time.add(temp);
-		}}
-		catch(Exception e){
+			System.out.println(buslstCord.get(0));
+			System.out.println(cord);
+			for (int i = 0; i < buslst.size(); i++) {
+				apiClass temp = new apiClass(buslstCord.get(i), cord, routeIdforCall.get(i));
+				time.add(temp);
+			}
+		} catch (Exception e) {
 			System.out.println("The is no bus currently that services this stop");
 			log.info(String.format("The is no bus currently that services this stop"));
 			return null;
-			
+
 		}
 		return time;
 	}

@@ -33,7 +33,11 @@ public class Simulation extends Thread {
 
 	@Override
 	public void run() {
-		
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		ArrayList<Integer> ids = new ArrayList<Integer>();
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 
@@ -41,42 +45,39 @@ public class Simulation extends Thread {
 		context.refresh();
 		BusService bs = context.getBean(BusService.class);
 		ids = bs.getBusIds();
-		System.out.println(ids);
 		// pick a random bus
 		int index = (int) (Math.random() * ids.size());
-		System.out.println(ids.get(index));
-		Bus b1 = bs.getById(ids.get(index));  
-		if (b1.getRouteId() != 0)  // if the bus has already a route assigned, cancel
+//		System.out.println(ids.get(index));
+		Bus b1 = bs.getById(ids.get(index));
+		if (b1.getRouteId() != 0) // if the bus has already a route assigned, cancel
 			return;
-		System.out.println(b1);
-		int routeId = routeIds.get((int) (Math.random() * routeIds.size()));  // pick a random route to assign
+		int routeId = routeIds.get((int) (Math.random() * routeIds.size())); // pick a random route to assign
 		b1.setRouteId(routeId);
 
 		int counter_max = getNumOfStops(b1);
 		int counter = 0;
 		while (counter != counter_max - 1) {
 			try {
-				Thread.sleep(2500); // the trip duration between two stops
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			try {
-
+				Thread.sleep(5000); // Trip duration between bus and the stop
 				print_stops(b1, counter);
 				bs.updateBus(b1.getId(), b1);
 				counter++;
 
-			} catch (NullPointerException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 		}
-		b1.setRouteId(0);  // reset bus's route id
-		System.out.println(b1.getRouteId());
+
+		b1.setRouteId(0); // reset bus's route id
+		bs.updateBus(b1.getId(), b1);
 
 	}
 
-	// gets the number of stops
+	/**
+	 * @param b
+	 * @return the number of stops the given {@link Bus} has to visit
+	 */
 	public int getNumOfStops(Bus b) {
 		List<Integer> id_list = new ArrayList<Integer>();
 		int numofstops;
@@ -90,9 +91,13 @@ public class Simulation extends Thread {
 		return numofstops;
 	}
 
-	// id,name,long,lat
-	// gets the stops from json starts a bus route and calculates the time needed
-	// from one stop to the other
+	/**
+	 * 
+	 * gets the stops from json starts a bus route and calculates the time needed from one stop to the other
+	 * @param b
+	 * @param n 
+	 * 
+	 */
 	public void print_stops(Bus b, int n) {
 		List<Integer> id_list = new ArrayList<Integer>();
 		List<LinkedHashMap> stopsJSON = (List<LinkedHashMap>) JSONHandler
@@ -106,7 +111,7 @@ public class Simulation extends Thread {
 		Object long_de = stopsJSON.get(n + 1).get("long");
 		Object lat_de = stopsJSON.get(n + 1).get("lat");
 		Object name_de = stopsJSON.get(n + 1).get("name");
-		System.out.println("bus is at " + name_or);
+		System.out.println("bus " + b.getId() + " is at " + name_or);
 		System.out.println("next station is " + name_de);
 
 		try {
@@ -123,6 +128,9 @@ public class Simulation extends Thread {
 
 	}
 
+	/**
+	 * Initializes the routeId list
+	 */
 	public void initRoutes() {
 		List<LinkedHashMap> routesJSON = (List<LinkedHashMap>) JSONHandler.readJSONFile("routes.json");
 		for (int i = 0; i < routesJSON.size(); i++) {

@@ -113,7 +113,8 @@ public class RouteService implements IRouteService {
 
 	/**
 	 * @param stopId
-	 * @return the {@link Route} instances that contain a specific {@link Stop} instance 
+	 * @return the {@link Route} instances that contain a specific {@link Stop}
+	 *         instance
 	 */
 	public ArrayList<Route> getRoutesByStop(int stopId) {
 		if (stopId < 0)
@@ -121,7 +122,7 @@ public class RouteService implements IRouteService {
 		ArrayList<Route> stopRoutes = new ArrayList<Route>();
 		for (Route r : routes) {
 			LinkedList<Integer> stops = r.getStops();
-			if(stops.indexOf(stopId)!=-1) {
+			if (stops.indexOf(stopId) != -1) {
 				stopRoutes.add(r);
 			}
 		}

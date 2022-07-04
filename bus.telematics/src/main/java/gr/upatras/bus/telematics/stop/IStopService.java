@@ -15,43 +15,50 @@ import gr.upatras.bus.telematics.route.*;
  *
  */
 public interface IStopService {
-	
+
 	/**
 	 * @return all {@link Stop} instances
 	 */
-	List<Stop>getAll();
-	
+	List<Stop> getAll();
+
 	/**
 	 * @param id
 	 * @return the {@link Stop} with the specific id
 	 */
 	Stop getById(int id);
-	
+
 	/**
 	 * @param s
 	 * @return the created instance of {@link Stop}
 	 */
 	Stop createStop(Stop s);
-	
+
 	/**
 	 * @param id
 	 * @param s
 	 * @return the changed {@link Stop} with specific id
 	 */
 	Stop editStop(int id, Stop s);
-	
+
 	/**
 	 * @param id
 	 */
 	Void deleteStop(int id);
-	
-	
+
 	/**
 	 * @param routeId
-	 * @return {@link ArrayList} containing {@link Stop} of the specific {@link Route}
+	 * @return {@link ArrayList} containing {@link Stop} of the specific
+	 *         {@link Route}
 	 */
 	ArrayList<Stop> getStopsByRouteId(int routeId);
 
-	ArrayList<apiClass>  getTime(String Stopname)throws IOException, InterruptedException, ParseException;
+	/**
+	 * @param stopId
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 * @throws ParseException
+	 */
+	ArrayList<apiClass> getTime(int stopId) throws IOException, InterruptedException, ParseException;
 
 }

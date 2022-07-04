@@ -109,6 +109,9 @@ public class BusService implements IBusService {
 		return temp;
 	}
 
+	/**
+	 * Deletes bus and updates the json file
+	 */
 	@Override
 	public Void deleteBus(int id) {
 		if (id < 0)
@@ -123,10 +126,6 @@ public class BusService implements IBusService {
 		}
 		return null;
 	}
-
-	// function that gets an origin and a destination and return the estimated time
-	// (as a string) between those two points
-	// origin and destination can be city names or coordinates
 
 	/**
 	 * @param origin
@@ -143,25 +142,19 @@ public class BusService implements IBusService {
 
 	/**
 	 * @param id
-	 * @param bus
-	 * Updates the {@link Bus} object which has the given id, with the attributes of the given {@link Bus} object
-	 * It also updates the JSON file with the new information
+	 * @param bus Updates the {@link Bus} object which has the given id, with the
+	 *            attributes of the given {@link Bus} object It also updates the
+	 *            JSON file with the new information
 	 */
 	public void updateBus(int id, Bus bus) {
 		int counter = 0;
 		for (Bus b : buses) {
-
 			if (b.getId() == id) {
 				buses.remove(b);
 				buses.add(counter, bus);
 				break;
 			}
 			counter++;
-		}
-
-		for (Bus b : buses) {
-			System.out.println(b.getId());
-			System.out.println(b.getRouteId());
 		}
 		JSONHandler.createJSONFile("bus.json", buses);
 

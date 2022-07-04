@@ -39,7 +39,16 @@ public class Application {
 
 		busInitializer(10);
 		SpringApplication.run(Application.class, args);
-		createDaemon();
+		while (true) {
+			Simulation s1 = new Simulation();
+			s1.start();
+			try {
+				s1.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+		}
 	}
 
 	/**
@@ -139,7 +148,9 @@ public class Application {
 }
 
 /**
- * @author jlaza Simulation task class
+ * Simulation task class
+ * 
+ * @author jlaza
  */
 class startSimulation extends TimerTask {
 	public void run() {
